@@ -1,0 +1,87 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Main.gd" type="Script" id=1]
+[ext_resource path="res://Obstacle.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Ground.tscn" type="PackedScene" id=3]
+[ext_resource path="res://LilyWhite.tscn" type="PackedScene" id=4]
+[ext_resource path="res://asset/background.png" type="Texture" id=5]
+[ext_resource path="res://HUD.tscn" type="PackedScene" id=6]
+[ext_resource path="res://font/Xolonium-Regular.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://asset/BGM.mp3" type="AudioStream" id=8]
+[ext_resource path="res://asset/cancelMute.png" type="Texture" id=9]
+[ext_resource path="res://asset/switch.ogg" type="AudioStream" id=10]
+
+[sub_resource type="DynamicFont" id=1]
+size = 48
+outline_size = 2
+font_data = ExtResource( 7 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 360, 20 )
+
+[node name="Main" type="Node"]
+script = ExtResource( 1 )
+obstalce_scene = ExtResource( 2 )
+ground_scene = ExtResource( 3 )
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 5 )
+
+[node name="HUD" parent="." instance=ExtResource( 6 )]
+
+[node name="LilyWhite" parent="." instance=ExtResource( 4 )]
+position = Vector2( 360, 100 )
+
+[node name="ScoreTimer" type="Timer" parent="."]
+wait_time = 3.5
+
+[node name="StartPosition" type="Position2D" parent="."]
+position = Vector2( 360, 100 )
+
+[node name="ScoreDisplay" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="ScoreDisplay"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -79.0
+margin_top = 43.0
+margin_right = -39.0
+margin_bottom = 101.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "0"
+
+[node name="Mute" type="CanvasLayer" parent="."]
+
+[node name="kickSound" type="AudioStreamPlayer" parent="Mute"]
+stream = ExtResource( 10 )
+
+[node name="MuteButton" type="TextureButton" parent="Mute"]
+margin_left = 30.0
+margin_top = 31.0
+margin_right = 110.0
+margin_bottom = 111.0
+rect_scale = Vector2( 0.75, 0.75 )
+texture_normal = ExtResource( 9 )
+stretch_mode = 2
+
+[node name="topBarrier" type="Area2D" parent="."]
+position = Vector2( 360, -50 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="topBarrier"]
+position = Vector2( 1.36422e-12, 1.36422e-12 )
+shape = SubResource( 2 )
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 8 )
+
+[connection signal="child_exiting_tree" from="." to="." method="terrain_go_out_window"]
+[connection signal="start_game" from="HUD" to="." method="new_game"]
+[connection signal="collision_happened" from="LilyWhite" to="." method="_on_LilyWhite_collision_happened"]
+[connection signal="end_game" from="LilyWhite" to="." method="_on_LilyWhite_end_game"]
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
+[connection signal="finished" from="Mute/kickSound" to="." method="_on_kickSound_finished"]
+[connection signal="pressed" from="Mute/MuteButton" to="." method="_on_MuteButton_pressed"]

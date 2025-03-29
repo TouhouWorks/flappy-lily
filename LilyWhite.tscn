@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://asset/hit.ogg" type="AudioStream" id=1]
+[ext_resource path="res://LilyWhite.gd" type="Script" id=8]
+[ext_resource path="res://asset/lilyWhite/fly_02.png" type="Texture" id=9]
+[ext_resource path="res://asset/lilyWhite/leg.png" type="Texture" id=10]
+[ext_resource path="res://asset/lilyWhite/fly_03.png" type="Texture" id=11]
+[ext_resource path="res://asset/lilyWhite/fly_01.png" type="Texture" id=12]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 12 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 9 ) ],
+"loop": true,
+"name": "fly",
+"speed": 5.0
+} ]
+
+[node name="LilyWhite" type="RigidBody2D"]
+position = Vector2( 360, 540 )
+mass = 3.0
+script = ExtResource( 8 )
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="leg" type="Sprite" parent="Area2D"]
+position = Vector2( 5, 51 )
+rotation = 0.349066
+texture = ExtResource( 10 )
+
+[node name="mainBody" type="AnimatedSprite" parent="Area2D"]
+frames = SubResource( 1 )
+animation = "fly"
+offset = Vector2( -1.245, 0 )
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Area2D"]
+rotation = -2.89551
+polygon = PoolVector2Array( -22.3071, 5.60315, -52.4419, -48.6913, -8.54947, -54.561, 26.3843, -46.8388, 17.4485, -12.6313, 4.88607, 31.7667, 4.17357, 45.3495, -5.76876, 46.8158, -35.3522, 52.1845 )
+
+[node name="hitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 1 )
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]
